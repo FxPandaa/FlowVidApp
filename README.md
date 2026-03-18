@@ -1,62 +1,70 @@
-# Vreamio Mobile Apps
+<h1 align="center">FlowVid Mobile</h1>
 
-Native Android and iOS apps for Vreamio — visually and functionally identical to the web/desktop version.
+<p align="center">
+  <strong>Stream everything. One app. No limits.</strong><br />
+  FlowVid for Android.
+</p>
 
-## Structure
+<p align="center">
+  <img src="https://img.shields.io/badge/platform-Android-brightgreen" alt="Platform" />
+  <img src="https://img.shields.io/badge/license-MIT-green" alt="License" />
+</p>
 
-```
-phone-app/
-├── android/     # Kotlin + Jetpack Compose + Media3 ExoPlayer
-├── ios/         # Swift + SwiftUI + AVPlayer
-└── docs/        # Parity validation documentation
-```
+---
 
-## Android
+## What is FlowVid?
 
-**Tech stack**: Kotlin 1.9.22, Jetpack Compose (Material 3), Media3 ExoPlayer 1.2.1, Retrofit 2.9.0, Coil, DataStore, Navigation Compose
+FlowVid is a native streaming application that gives you a Netflix-like experience for all your media. Browse, search, and stream movies and TV shows through user-installed third-party addons. No built-in scrapers, no hardcoded sources.
 
-**Architecture**: MVVM with ViewModels + StateFlow
+---
 
-### Build & Run
-```bash
-cd android
-./gradlew assembleDebug
-```
+## Features
 
-**Requirements**: JDK 17, Android SDK 34, minSdk 26
+- **Addon-based streaming** — install third-party addons to find sources, no built-in scrapers
+- **Progressive stream loading** — results appear in real-time as each addon responds
+- **Cross-device sync** — library, watch history, settings, profiles, and addons
+- **Up to 8 profiles** per account with separate libraries and preferences
+- **30+ subtitle languages** via OpenSubtitles with timing offset support
+- **Skip intro / Skip outro** via AniSkip + IntroDB
+- **Auto-play next episode**
+- **Discover page** powered by TMDB, filterable by genre, year, and rating
 
-## iOS
+---
 
-**Tech stack**: Swift 5.9, SwiftUI, AVPlayer, Kingfisher (async images)
+## Tech Stack
 
-**Architecture**: MVVM with ObservableObject + @Published
+| Component | Technology |
+|-----------|------------|
+| Framework | React Native + Expo |
+| Language | TypeScript |
+| State | Zustand |
+| Video Player | expo-av (ExoPlayer on Android) |
+| Metadata | Cinemeta + TMDB enrichment |
+| Subtitles | Embedded + OpenSubtitles |
 
-### Build & Run
-Open `ios/Vreamio.xcodeproj` in Xcode 15+ and run.
+---
 
-**Requirements**: Xcode 15+, iOS 16+
+## Download
 
-## Feature Coverage
+Head to the [Releases](https://github.com/fxpandaa/FlowVidApp/releases) page to download the latest APK.
 
-Both apps implement 100% of the web features:
+---
 
-- **Auth**: Login, register, token refresh, persistent sessions
-- **Profiles**: Create, select, switch (12 avatar colors × 12 icons, max 8)
-- **Home**: Hero banner (15s auto-rotate), continue watching, catalog rows
-- **Search**: 400ms debounced, combined results, filter tabs
-- **Details**: Backdrop hero, metadata, genres, cast, season/episode browser
-- **Library**: Filter (All/Movies/Series/Favorites/Watchlist), sort options
-- **Player**: Custom controls, seek ±10s, progress saving (10s), resume, next episode
-- **Settings**: Account info, subscription management, profile switching, logout
+## Related Apps
 
-## Design System
+| App | Platform |
+|-----|----------|
+| [FlowVid PC](https://github.com/fxpandaa/FlowVidPC) | Windows, macOS, Linux |
+| [FlowVid TV](https://github.com/fxpandaa/FlowVidTV) | Android TV |
 
-All color tokens, border radius values, and typography are 1:1 mapped from the web CSS variables. See [docs/PARITY.md](docs/PARITY.md) for the complete mapping.
+---
 
-## API Integration
+## License
 
-Both apps connect to the same backend endpoints:
-- Vreamio API (auth, profiles, library, history, billing)
-- Cinemeta (catalog, search, metadata)
-- Torrentio (stream sources)
-- OpenSubtitles (subtitles)
+MIT
+
+---
+
+## Disclaimer
+
+FlowVid does not host, store, or distribute any content. It is a player interface that connects to user-installed third-party addons. Users are solely responsible for the addons they install and the content they access.
