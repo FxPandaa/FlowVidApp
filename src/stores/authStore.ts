@@ -1,0 +1,134 @@
+import { create } from "zustand/index";
+import { persist } from "zustand/middleware.js";
+import { createAsyncStorage } from "./asyncStorage";
+
+import { API_URL } from "../config";
+
+interface User {
+  id: string;
+  email: string;
+  username: string;
+}
+
+interface AuthState {
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
+
+  // Actions
+  login: (email: string, password: string) => Promise<void>;
+  register: (
+    email: string,
+    username: string,
+    password: string,
+  ) => Promise<void>;
+  logout: () => void;
+  setError: (error: string | null) => void;
+  clearError: () => void;
+}
+
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      token: null,
+      isAuthenticated: false,
+      isLoading: false,
+      error: null,
+
+      login: async (email: string, password: string) => {
+        set({ isLoading: true, error: null });
+
+        try {
+          const response = await fetch(`${API_URL}/auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || "Login failed");
+          }
+
+          set({
+            user: data.user,
+            token: data.token,
+            isAuthenticated: true,
+            isLoading: false,
+          });
+        } catch (error) {
+          set({
+            isLoading: false,
+            error: error instanceof Error ? error.message : "Login failed",
+          });
+          throw error;
+        }
+      },
+
+      register: async (email: string, username: string, password: string) => {
+        set({ isLoading: true, error: null });
+
+        try {
+          const response = await fetch(`${API_URL}/auth/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, username, password }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || "Registration failed");
+          }
+
+          set({
+            user: data.user,
+            token: data.token,
+            isAuthenticated: true,
+            isLoading: false,
+          });
+        } catch (error) {
+          set({
+            isLoading: false,
+            error:
+              error instanceof Error ? error.message : "Registration failed",
+          });
+          throw error;
+        }
+      },
+
+      logout: () => {
+        set({
+          user: null,
+          token: null,
+          isAuthenticated: false,
+          error: null,
+        });
+
+        // Clear profile and library data on logout
+        import("./profileStore").then(({ useProfileStore }) =>
+          useProfileStore.getState().clearAll(),
+        );
+        import("./libraryStore").then(({ useLibraryStore }) =>
+          useLibraryStore.getState().switchProfile(null),
+        );
+      },
+
+      setError: (error: string | null) => set({ error }),
+      clearError: () => set({ error: null }),
+    }),
+    {
+      name: "FlowVid-auth",
+      storage: createAsyncStorage(),
+      partialize: (state) => ({
+        user: state.user,
+        token: state.token,
+        isAuthenticated: state.isAuthenticated,
+      }),
+    },
+  ),
+);
